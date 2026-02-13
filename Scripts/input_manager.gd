@@ -28,6 +28,6 @@ func sent_input_to_manager(dir: GameManager.Directions):
 		next_input = dir
 		return
 	
-	GameManager.receve_player_input(dir)
+	GameManager.recieve_player_input(dir)
 	input_delay_timer.start()
 	next_input = null

@@ -49,10 +49,15 @@ size = Vector2(16, 16)
 script = ExtResource("1_v0iea")
 
 [node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1459795270]
-position = Vector2(-4.7683716e-07, 4.7683716e-07)
+position = Vector2(7.999999, 7.999999)
 scale = Vector2(0.99999994, 0.99999994)
 sprite_frames = SubResource("SpriteFrames_x3wgy")
 animation = &"Player"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1104887961]
+position = Vector2(8, 7.999999)
 shape = SubResource("RectangleShape2D_v0iea")
+
+[node name="Timer" type="Timer" parent="." unique_id=1525650968]
+wait_time = 0.1
+one_shot = true
