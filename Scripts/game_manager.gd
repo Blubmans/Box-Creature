@@ -7,6 +7,13 @@ enum Spaces
 	player,
 	box
 }
+enum Directions
+{
+	up,
+	right,
+	down,
+	left
+}
 
 var board = []
 
@@ -18,3 +25,15 @@ func _ready():
 			board[i].append(Spaces.empty)
 	
 	print(board)
+
+
+func receve_input(direction: Directions):
+	match direction:
+		Directions.up:
+			pass
+		Directions.right:
+			pass
+		Directions.down:
+			pass
+		Directions.left:
+			pass
