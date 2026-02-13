@@ -1,20 +1,17 @@
 extends Node
 
-enum Spaces 
-{
+enum Spaces {
 	empty,
 	wall,
 	player,
-	box
-}
-enum Directions
-{
+	box,
+	player_end,
+	box_end}
+enum Directions {
 	up,
 	right,
 	down,
-	left
-}
-
+	left}
 var board = []
 
 func _ready():
@@ -27,7 +24,11 @@ func _ready():
 	print(board)
 
 
-func receve_input(direction: Directions):
+func set_board_walls(wallPositions):
+	pass
+
+
+func receve_player_input(direction: Directions):
 	match direction:
 		Directions.up:
 			pass
