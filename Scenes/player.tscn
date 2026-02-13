@@ -1,0 +1,59 @@
+[gd_scene format=3 uid="uid://dll2a4k1akuut"]
+
+[ext_resource type="Script" uid="uid://da7ov1uo54oa3" path="res://Scripts/player.gd" id="1_v0iea"]
+[ext_resource type="Texture2D" uid="uid://bwx2q706ijimg" path="res://Art/TileMaps/GameBoyPlayerCube.png" id="2_cvnsp"]
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_6t5aa"]
+atlas = ExtResource("2_cvnsp")
+region = Rect2(16, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_vgqql"]
+atlas = ExtResource("2_cvnsp")
+region = Rect2(32, 0, 16, 16)
+
+[sub_resource type="AtlasTexture" id="AtlasTexture_fkybt"]
+atlas = ExtResource("2_cvnsp")
+region = Rect2(0, 0, 16, 16)
+
+[sub_resource type="SpriteFrames" id="SpriteFrames_x3wgy"]
+animations = [{
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_6t5aa")
+}],
+"loop": true,
+"name": &"Body",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_vgqql")
+}],
+"loop": true,
+"name": &"Dead_Body",
+"speed": 5.0
+}, {
+"frames": [{
+"duration": 1.0,
+"texture": SubResource("AtlasTexture_fkybt")
+}],
+"loop": true,
+"name": &"Player",
+"speed": 5.0
+}]
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_v0iea"]
+size = Vector2(16, 16)
+
+[node name="Player" type="CharacterBody2D" unique_id=1725069007]
+script = ExtResource("1_v0iea")
+
+[node name="Sprite2D" type="AnimatedSprite2D" parent="." unique_id=1459795270]
+position = Vector2(-4.7683716e-07, 4.7683716e-07)
+scale = Vector2(0.99999994, 0.99999994)
+sprite_frames = SubResource("SpriteFrames_x3wgy")
+animation = &"Player"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1104887961]
+visible = false
+shape = SubResource("RectangleShape2D_v0iea")
