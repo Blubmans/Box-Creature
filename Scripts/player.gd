@@ -2,21 +2,30 @@ extends CharacterBody2D
 
 @export var isHead = false
 @export var gridPosition: Vector2i = Vector2i(3, 2)
-@export var floatingGridPosition: Vector2
+var floatingGridPosition: Vector2
 @onready var timer: Timer = $Timer
+@onready var sprite: AnimatedSprite2D = $Sprite2D
 
 
 func _ready() -> void:
 	GameManager.updatePlayerPos.connect(update_player_pos)
+	floatingGridPosition = position * 16
+	if isHead:
+		GameManager.board[gridPosition.y][gridPosition.x] = GameManager.Spaces.player
+		GameManager.playerPos = gridPosition
+		sprite.animation = "Player"
+	else:
+		GameManager.board[gridPosition.y][gridPosition.x] = GameManager.Spaces.body
+		sprite.animation = "Body"
+
+
+func update_player_pos(oldPos: Vector2i, newPos: Vector2i):
+	if oldPos != gridPosition:
+		return
+	
+	gridPosition = Vector2(newPos)
 	floatingGridPosition = position
-
-
-func update_player_pos():
-	for i in range(GameManager.boardSize):
-		if GameManager.board[i].find(GameManager.Spaces.player) != -1:
-			gridPosition = Vector2(GameManager.board[i].find(GameManager.Spaces.player), i)
-			floatingGridPosition = position
-			timer.start()
+	timer.start()
 
 
 func _process(_delta: float) -> void:

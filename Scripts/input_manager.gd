@@ -25,7 +25,7 @@ func _process(_delta: float) -> void:
 
 func sent_input_to_manager(dir: GameManager.Directions):
 	if !input_delay_timer.is_stopped():
-		next_input = dir
+		#next_input = dir
 		return
 	
 	GameManager.recieve_player_input(dir)

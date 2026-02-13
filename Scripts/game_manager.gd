@@ -14,7 +14,8 @@ enum Directions {
 	left}
 var board = []
 var boardSize: int = 10
-var playerPos: Vector2i = Vector2i(3, 2)
+var nonTransparantSpaces = [Spaces.wall, Spaces.player, Spaces.body]
+var playerPos: Vector2i
 var bodyParts = []
 signal updatePlayerPos
 
@@ -32,12 +33,20 @@ func set_board_walls(wallPositions):
 
 
 func change_player_pos(originPos: Vector2i, pos: Vector2i):
-	board[originPos.y][originPos.x] = Spaces.empty
-	board[pos.y][pos.x] = Spaces.player
+	if board[originPos.y][originPos.x] == Spaces.player:
+		board[originPos.y][originPos.x] = Spaces.empty
+		playerPos = pos
+		board[pos.y][pos.x] = Spaces.player
+	else:
+		board[originPos.y][originPos.x] = Spaces.empty
+		board[pos.y][pos.x] = Spaces.body
+	updatePlayerPos.emit(originPos, pos)
 
 
 func list_bodyparts():
+	bodyParts.clear()
 	bodyParts.append(playerPos)
+	
 	var bodyPartLength = -1
 	while len(bodyParts) != bodyPartLength:
 		bodyPartLength = len(bodyParts)
@@ -48,7 +57,7 @@ func list_bodyparts():
 			bodyParts.append(Vector2i(bodyParts[i].x - 1, bodyParts[i].y))
 		bodyParts = unique_array(bodyParts)
 		for i in range(len(bodyParts) -1, -1, -1):
-			if board[bodyParts[i].y][bodyParts[i].x] != Spaces.body:
+			if board[bodyParts[i].y][bodyParts[i].x] != Spaces.body && board[bodyParts[i].y][bodyParts[i].x] != Spaces.player:
 				bodyParts.remove_at(i)
 
 
@@ -63,11 +72,12 @@ func unique_array(array: Array) -> Array:
 
 
 func recieve_player_input(direction: Directions):
+	# Get all body parts
 	list_bodyparts()
 	
 	var small
 	var big
-	# Get the outer most bodypart
+	# Get the outer most bodyparts
 	if direction == Directions.up || direction == Directions.down:
 		small = playerPos.x
 		big = playerPos.x
@@ -82,12 +92,12 @@ func recieve_player_input(direction: Directions):
 		for i in range(len(bodyParts)):
 			if bodyParts[i].y < small:
 				small = bodyParts[i].y
-			if bodyParts[i].y < big:
+			if bodyParts[i].y > big:
 				big = bodyParts[i].y
 	
 	# Make body part lines
 	var bodyPartLines = []
-	for i in range(big - small):
+	for i in range(big - small + 1):
 		bodyPartLines.append([])
 	
 	for i in range(len(bodyParts)):
@@ -100,7 +110,8 @@ func recieve_player_input(direction: Directions):
 		if direction == Directions.up || direction == Directions.left:
 			bodyPartLines[i].sort()
 		else:
-			bodyPartLines[i].sort_custom(func(a, b): return a[1] > b[1])
+			bodyPartLines[i].sort()
+			bodyPartLines[i].reverse()
 		for item in range(len(bodyPartLines[i])):
 			move_player(bodyPartLines[i][item], direction)
 
@@ -109,23 +120,21 @@ func move_player(pos: Vector2i, direction: Directions):
 	match direction:
 		Directions.up:
 			for i in range(1, boardSize):
-				if board[pos.y - i][pos.x] == Spaces.wall:
+				if board[pos.y - i][pos.x] in nonTransparantSpaces:
 					change_player_pos(pos, Vector2i(pos.x, pos.y - i + 1))
 					break
 		Directions.right:
 			for i in range(1, boardSize):
-				if board[pos.y][pos.x + i] == Spaces.wall:
+				if board[pos.y][pos.x + i] in nonTransparantSpaces:
 					change_player_pos(pos, Vector2i(pos.x + i - 1, pos.y))
 					break
 		Directions.down:
 			for i in range(1, boardSize):
-				if board[pos.y + i][pos.x] == Spaces.wall:
+				if board[pos.y + i][pos.x] in nonTransparantSpaces:
 					change_player_pos(pos, Vector2i(pos.x, pos.y + i - 1))
 					break
 		Directions.left:
 			for i in range(1, boardSize):
-				if board[pos.y][pos.x - i] == Spaces.wall:
+				if board[pos.y][pos.x - i] in nonTransparantSpaces:
 					change_player_pos(pos, Vector2i(pos.x - i + 1, pos.y))
 					break
-	
-	updatePlayerPos.emit()
