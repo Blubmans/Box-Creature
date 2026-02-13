@@ -15,7 +15,7 @@ enum Directions {
 var board = []
 var boardSize: int = 10
 var playerPos: Vector2i = Vector2i(3, 2)
-var bodyParts: Array[Vector2i] = []
+var bodyParts = []
 signal updatePlayerPos
 
 func _ready() -> void:
@@ -41,7 +41,7 @@ func list_bodyparts():
 	var bodyPartLength = -1
 	while len(bodyParts) != bodyPartLength:
 		bodyPartLength = len(bodyParts)
-		for i in range(len(playerPos)):
+		for i in range(len(bodyParts)):
 			bodyParts.append(Vector2i(bodyParts[i].x, bodyParts[i].y - 1))
 			bodyParts.append(Vector2i(bodyParts[i].x + 1, bodyParts[i].y))
 			bodyParts.append(Vector2i(bodyParts[i].x, bodyParts[i].y + 1))
@@ -96,6 +96,13 @@ func recieve_player_input(direction: Directions):
 		else:
 			bodyPartLines[bodyParts[i].y - small].append(bodyParts[i])
 	
+	for i in range(len(bodyPartLines)):
+		if direction == Directions.up || direction == Directions.left:
+			bodyPartLines[i].sort()
+		else:
+			bodyPartLines[i].sort_custom(func(a, b): return a[1] > b[1])
+		for item in range(len(bodyPartLines[i])):
+			move_player(bodyPartLines[i][item], direction)
 
 
 func move_player(pos: Vector2i, direction: Directions):
