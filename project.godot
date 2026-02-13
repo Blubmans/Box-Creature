@@ -18,7 +18,12 @@ config/icon="res://icon.svg"
 [autoload]
 
 GameManager="*uid://c35fc0kgq4d4u"
-InputManager="*uid://blenfhpm213it"
+
+[display]
+
+window/size/viewport_width=640
+window/size/viewport_height=640
+window/stretch/scale=4.0
 
 [input]
 

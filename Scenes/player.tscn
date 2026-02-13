@@ -55,5 +55,4 @@ sprite_frames = SubResource("SpriteFrames_x3wgy")
 animation = &"Player"
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1104887961]
-visible = false
 shape = SubResource("RectangleShape2D_v0iea")
