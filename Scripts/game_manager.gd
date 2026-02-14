@@ -111,10 +111,8 @@ func recieve_player_input(direction: Directions):
 			bodyPartLines[bodyParts[i].y - small].append(bodyParts[i])
 	
 	for i in range(len(bodyPartLines)):
-		if direction == Directions.up || direction == Directions.left:
-			bodyPartLines[i].sort()
-		else:
-			bodyPartLines[i].sort()
+		bodyPartLines[i].sort()
+		if direction == Directions.down || direction == Directions.right:
 			bodyPartLines[i].reverse()
 		for item in range(len(bodyPartLines[i])):
 			move_player(bodyPartLines[i][item], direction)
