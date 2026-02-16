@@ -12,8 +12,6 @@ func _ready() -> void:
 	GameManager.updateBodyLooks.connect(change_sprite)
 	floatingGridPosition = position * 16
 	if isHead:
-		GameManager.board[gridPosition.y][gridPosition.x] = GameManager.Spaces.player
-		GameManager.playerPos = gridPosition
 		sprite.animation = "Player"
 	else:
 		GameManager.board[gridPosition.y][gridPosition.x] = GameManager.Spaces.body

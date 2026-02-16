@@ -13,11 +13,10 @@ enum Directions {
 	down,
 	left}
 var board = []
-var boardSize: int = 10
 var bodyEndPositions = []
 var headEndPositions = []
 var nonTransparantSpaces = [Spaces.wall, Spaces.player, Spaces.body]
-var playerPos: Vector2i
+var playerPos: Array[Vector2i]
 var bodyParts = []
 signal updatePlayerPos
 signal updateBodyLooks
@@ -30,15 +29,18 @@ func _ready() -> void:
 			board[i].append(Spaces.empty)
 
 
-func set_board_walls(wallPositions):
-	for i in range(len(wallPositions)):
-		board[wallPositions[i].y][wallPositions[i].x] = Spaces.wall
+func set_level_data(level, playerPositions, headEnds, bodyEnds):
+	board = level
+	playerPos = playerPositions
+	headEndPositions = headEnds
+	bodyEndPositions = bodyEnds
 
 
 func change_player_pos(originPos: Vector2i, pos: Vector2i):
 	if board[originPos.y][originPos.x] == Spaces.player:
 		board[originPos.y][originPos.x] = Spaces.empty
-		playerPos = pos
+		playerPos.erase(originPos)
+		playerPos.append(pos)
 		board[pos.y][pos.x] = Spaces.player
 	else:
 		board[originPos.y][originPos.x] = Spaces.empty
@@ -48,7 +50,7 @@ func change_player_pos(originPos: Vector2i, pos: Vector2i):
 
 func list_bodyparts() -> Array:
 	var bodyList = []
-	bodyList.append(playerPos)
+	bodyList += playerPos
 	
 	var bodyPartLength = -1
 	while len(bodyList) != bodyPartLength:
@@ -83,16 +85,16 @@ func recieve_player_input(direction: Directions):
 	var big
 	# Get the outer most bodyparts
 	if direction == Directions.up || direction == Directions.down:
-		small = playerPos.x
-		big = playerPos.x
+		small = bodyParts[0].x
+		big = bodyParts[0].x
 		for i in range(len(bodyParts)):
 			if bodyParts[i].x < small:
 				small = bodyParts[i].x
 			if bodyParts[i].x > big:
 				big = bodyParts[i].x
 	else:
-		small = playerPos.y
-		big = playerPos.y
+		small = bodyParts[0].y
+		big = bodyParts[0].y
 		for i in range(len(bodyParts)):
 			if bodyParts[i].y < small:
 				small = bodyParts[i].y
@@ -122,38 +124,41 @@ func recieve_player_input(direction: Directions):
 
 
 func move_player(pos: Vector2i, direction: Directions):
+	var i = 1
 	match direction:
 		Directions.up:
-			for i in range(1, boardSize):
-				if board[pos.y - i][pos.x] in nonTransparantSpaces:
-					change_player_pos(pos, Vector2i(pos.x, pos.y - i + 1))
-					break
+			while board[pos.y - i][pos.x] not in nonTransparantSpaces:
+				i += 1
+			change_player_pos(pos, Vector2i(pos.x, pos.y - i + 1))
 		Directions.right:
-			for i in range(1, boardSize):
-				if board[pos.y][pos.x + i] in nonTransparantSpaces:
-					change_player_pos(pos, Vector2i(pos.x + i - 1, pos.y))
-					break
+			while board[pos.y][pos.x + i] not in nonTransparantSpaces:
+				i += 1
+			change_player_pos(pos, Vector2i(pos.x + i - 1, pos.y))
 		Directions.down:
-			for i in range(1, boardSize):
-				if board[pos.y + i][pos.x] in nonTransparantSpaces:
-					change_player_pos(pos, Vector2i(pos.x, pos.y + i - 1))
-					break
+			while board[pos.y + i][pos.x] not in nonTransparantSpaces:
+				i += 1
+			change_player_pos(pos, Vector2i(pos.x, pos.y + i - 1))
 		Directions.left:
-			for i in range(1, boardSize):
-				if board[pos.y][pos.x - i] in nonTransparantSpaces:
-					change_player_pos(pos, Vector2i(pos.x - i + 1, pos.y))
-					break
+			while board[pos.y][pos.x - i] not in nonTransparantSpaces:
+				i += 1
+			change_player_pos(pos, Vector2i(pos.x - i + 1, pos.y))
 
 
 func check_win():
-	var body = list_bodyparts()
-	body.erase(playerPos)
+	var body = []
+	for y in range(len(board)):
+		if board[y].has(Spaces.body):
+			for x in range(len(board[0])):
+				if board[y][x] == Spaces.body:
+					body.append(Vector2i(x, y))
+	
 	for i in range(len(body)):
 		if body[i] not in bodyEndPositions:
 			return
 	
-	if playerPos not in headEndPositions:
-		return
+	for i in range(len(playerPos)):
+		if playerPos[i] not in headEndPositions:
+			return
 	
 	print("You win!")
 
