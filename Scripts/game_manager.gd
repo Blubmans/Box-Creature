@@ -16,17 +16,10 @@ var board = []
 var bodyEndPositions = []
 var headEndPositions = []
 var nonTransparantSpaces = [Spaces.wall, Spaces.player, Spaces.body]
-var playerPos: Array[Vector2i]
+var playerPos: Array
 var bodyParts = []
 signal updatePlayerPos
 signal updateBodyLooks
-
-func _ready() -> void:
-	#setup board
-	for i in range(10):
-		board.append([])
-		for j in range(10):
-			board[i].append(Spaces.empty)
 
 
 func set_level_data(level, playerPositions, headEnds, bodyEnds):
@@ -34,6 +27,8 @@ func set_level_data(level, playerPositions, headEnds, bodyEnds):
 	playerPos = playerPositions
 	headEndPositions = headEnds
 	bodyEndPositions = bodyEnds
+	
+	updateBodyLooks.emit(list_bodyparts())
 
 
 func change_player_pos(originPos: Vector2i, pos: Vector2i):
@@ -144,6 +139,10 @@ func move_player(pos: Vector2i, direction: Directions):
 			change_player_pos(pos, Vector2i(pos.x - i + 1, pos.y))
 
 
+func reset_level():
+	pass
+
+
 func check_win():
 	var body = []
 	for y in range(len(board)):
@@ -152,12 +151,12 @@ func check_win():
 				if board[y][x] == Spaces.body:
 					body.append(Vector2i(x, y))
 	
-	for i in range(len(body)):
-		if body[i] not in bodyEndPositions:
+	for i in range(len(bodyEndPositions)):
+		if bodyEndPositions[i] not in body:
 			return
 	
-	for i in range(len(playerPos)):
-		if playerPos[i] not in headEndPositions:
+	for i in range(len(headEndPositions)):
+		if headEndPositions[i] not in playerPos:
 			return
 	
 	print("You win!")

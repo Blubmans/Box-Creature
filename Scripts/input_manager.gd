@@ -21,6 +21,8 @@ func _process(_delta: float) -> void:
 		sent_input_to_manager(GameManager.Directions.down)
 	elif Input.is_action_pressed("Pressed_Left"):
 		sent_input_to_manager(GameManager.Directions.left)
+	elif Input.is_action_pressed("Reset"):
+		GameManager.reset_level()
 
 
 func sent_input_to_manager(dir: GameManager.Directions):

@@ -14,7 +14,6 @@ func _ready() -> void:
 	if isHead:
 		sprite.animation = "Player"
 	else:
-		GameManager.board[gridPosition.y][gridPosition.x] = GameManager.Spaces.body
 		sprite.animation = "Body"
 
 
