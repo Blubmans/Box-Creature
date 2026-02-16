@@ -7,8 +7,8 @@ var levels = [
 	#]
 	[  # Level 1
 		
-	], # Level 2
-	[
+	],
+	[  # Level 2
 		[
 			[Vector2i(4, 1)], 
 			[Vector2i(5, 3), Vector2i(3, 3), Vector2i(4, 4)],
@@ -30,7 +30,7 @@ var levels = [
 ]
 
 @export var loadLevel: bool = false
-@export var levelID: int = 1
+@export var loadLevelID: int = 1
 @onready var ground: TileMapLayer = $Ground
 @onready var walls: TileMapLayer = $Walls
 const PLAYER = preload("uid://dll2a4k1akuut")
@@ -39,7 +39,7 @@ var currentLevel = []
 
 func _ready() -> void:
 	if loadLevel:
-		pass
+		load_level(loadLevelID)
 	else:
 		read_editor_data()
 
@@ -91,5 +91,10 @@ func read_editor_data():
 	print([[headPositions, bodyPositions, headEnds, bodyEnds], currentLevel])
 
 
-func load_level():
-	pass
+func load_level(levelID: int):
+	var wallPos = []
+	for y in range(len(levels[levelID][1])):
+		for x in range(len(levels[levelID][1][y])):
+			if levels[levelID][1][y][x] == 1:
+				wallPos.append(Vector2i(x, y))
+	walls.set_cells_terrain_connect(wallPos, 0, 1)
