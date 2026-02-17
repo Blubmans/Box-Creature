@@ -10,7 +10,8 @@ var floatingGridPosition: Vector2
 func _ready() -> void:
 	GameManager.updatePlayerPos.connect(update_player_pos)
 	GameManager.updateBodyLooks.connect(change_sprite)
-	floatingGridPosition = position * 16
+	GameManager.reloadLevel.connect(free)
+	floatingGridPosition = gridPosition * 16
 	if isHead:
 		sprite.animation = "Player"
 	else:

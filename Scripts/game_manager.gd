@@ -20,6 +20,7 @@ var playerPos: Array
 var bodyParts = []
 signal updatePlayerPos
 signal updateBodyLooks
+signal reloadLevel
 
 
 func set_level_data(level, playerPositions, headEnds, bodyEnds):
@@ -140,7 +141,7 @@ func move_player(pos: Vector2i, direction: Directions):
 
 
 func reset_level():
-	pass
+	reloadLevel.emit()
 
 
 func check_win():

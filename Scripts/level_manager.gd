@@ -55,8 +55,8 @@ var levels = [
 	]
 ]
 
-@export var loadLevel: bool = false
-@export var loadLevelID: int = 1
+@export var loadLevel: bool = true
+@export var loadLevelID: int = 0
 @onready var ground: TileMapLayer = $Ground
 @onready var walls: TileMapLayer = $Walls
 const PLAYER = preload("uid://dll2a4k1akuut")
@@ -68,6 +68,7 @@ func _ready() -> void:
 		load_level(loadLevelID)
 	else:
 		read_editor_data()
+	GameManager.reloadLevel.connect(reload_level)
 
 
 func read_editor_data():
@@ -89,13 +90,25 @@ func read_editor_data():
 	setup_level(wallPositions, headPositions, bodyPositions, headEnds, bodyEnds, true)
 
 
+func reload_level():
+	load_level(loadLevelID)
+
+
 func load_level(levelID: int):
+	walls.clear()
+	ground.clear()
+	currentLevel.clear()
 	var wallPos = []
 	for y in range(len(levels[levelID][1])):
 		for x in range(len(levels[levelID][1][y])):
+			ground.set_cell(Vector2i(x, y), 0, Vector2i(4, 3))
 			if levels[levelID][1][y][x] == 1:
 				wallPos.append(Vector2i(x, y))
-	walls.clear()
+			if Vector2i(x, y) in levels[levelID][0][2]:
+				ground.set_cell(Vector2i(x, y), 0, Vector2i(6, 3))
+			if Vector2i(x, y) in levels[levelID][0][3]:
+				ground.set_cell(Vector2i(x, y), 0, Vector2i(5, 3))
+	
 	walls.set_cells_terrain_connect(wallPos, 0, 1)
 	
 	setup_level(wallPos, levels[levelID][0][0], levels[levelID][0][1], levels[levelID][0][2], levels[levelID][0][3])
@@ -122,7 +135,6 @@ func setup_level(wallPositions, headPositions, bodyPositions, headEnds, bodyEnds
 	# Sent levelData to Game Manager
 	GameManager.set_level_data(currentLevel, headPositions, headEnds, bodyEnds)
 	
-	
 	if printLevel:
 		# Print easy level code
 		print([[headPositions, bodyPositions, headEnds, bodyEnds], currentLevel])
@@ -133,10 +145,12 @@ func spawn_body(headPositions, bodyPositions):
 	for i in range(len(headPositions)):
 		var head = PLAYER.instantiate()
 		head.gridPosition = headPositions[i]
+		head.position = headPositions[i] * 16
 		head.isHead = true
 		add_child(head)
 	for i in range(len(bodyPositions)):
 		var body = PLAYER.instantiate()
 		body.gridPosition = bodyPositions[i]
+		body.position = bodyPositions[i] * 16
 		add_child(body)
 		

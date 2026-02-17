@@ -13,15 +13,15 @@ func _process(_delta: float) -> void:
 	if next_input != null:
 		sent_input_to_manager(next_input)
 	
-	if Input.is_action_pressed("Pressed_Up"):
+	if Input.is_action_just_pressed("Pressed_Up"):
 		sent_input_to_manager(GameManager.Directions.up)
-	elif Input.is_action_pressed("Pressed_Right"):
+	elif Input.is_action_just_pressed("Pressed_Right"):
 		sent_input_to_manager(GameManager.Directions.right)
-	elif Input.is_action_pressed("Pressed_Down"):
+	elif Input.is_action_just_pressed("Pressed_Down"):
 		sent_input_to_manager(GameManager.Directions.down)
-	elif Input.is_action_pressed("Pressed_Left"):
+	elif Input.is_action_just_pressed("Pressed_Left"):
 		sent_input_to_manager(GameManager.Directions.left)
-	elif Input.is_action_pressed("Reset"):
+	elif Input.is_action_just_pressed("Reset"):
 		GameManager.reset_level()
 
 
